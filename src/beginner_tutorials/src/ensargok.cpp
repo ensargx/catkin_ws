@@ -4,48 +4,13 @@
 #include <vector>
 #include <list>
 
-enum direction 
-{
-    up,
-    down,
-    right,
-    left
-};
-
-struct TurtleMove
-{
-    TurtleMove(direction _dir, int _dist)
-        : dir(_dir)
-        , dist(_dist)
-    {  }
-    direction dir;
-    int dist;
-
-    geometry_msgs::Twist asTwist() const
-    {
-        geometry_msgs::Twist msg = {};
-        if (dir == direction::up)
-            msg.linear.y = 1.f * dist;
-        else if (dir == direction::down)
-            msg.linear.y = -1.f * dist;
-        else if (dir == direction::right)
-            msg.linear.x = 1.f * dist;
-        else if (dir == direction::left)
-            msg.linear.x = -1.f * dist;
-        else 
-            ROS_ERROR("Unknown direction: %d", dir);
-
-        return msg;
-    }
-};
-
 struct TurtleChar
 {
-    std::vector<TurtleMove> moves = {};
+    std::vector<geometry_msgs::Twist> moves = {};
 
-    TurtleChar& addMove(direction dir, int dist) 
+    TurtleChar& addMove(const geometry_msgs::Twist& tw) 
     {
-        moves.emplace_back(dir, dist);
+        moves.push_back(tw);
         return *this;
     }
 
@@ -59,8 +24,8 @@ public:
         if (list.empty())
             return;
 
-        if ( list.front().dist * 5 > iter++ )
-            pub.publish(list.front().asTwist());
+        if ( 5 > iter++ )
+            pub.publish(list.front());
         else 
         {
             list.erase(list.begin());
@@ -71,20 +36,50 @@ public:
     void addChar(const TurtleChar& ch)
     {
         // c++23 -> append_range
-        for ( const TurtleMove& move : ch.moves )
+        for ( const geometry_msgs::Twist& move : ch.moves )
             list.emplace_back(move);
     }
 
 private:
-    std::list<TurtleMove> list = {};
+    std::list<geometry_msgs::Twist> list = {};
     int iter = 0;
 };
 
 TurtleWriter g_Writer;
 
+TurtleChar testA()
+{
+    TurtleChar ch = {};
+
+    geometry_msgs::Twist leg1 = {};
+    leg1.linear.x = 1.f;
+    leg1.linear.y = 3.f;
+
+    ch.moves.push_back(leg1);
+
+    geometry_msgs::Twist leg2 = {};
+    leg2.linear.x = 0.5f;
+    leg2.linear.y = -1.5f;
+
+    ch.moves.push_back(leg2);
+
+    geometry_msgs::Twist leg3;
+    leg3.linear.x = -1.f;
+    ch.moves.push_back(leg3);
+    leg3.linear.x = 1.f;
+    ch.moves.push_back(leg3);
+
+    ch.moves.push_back(leg2);
+
+    geometry_msgs::Twist end = {};
+    ch.moves.push_back(end);
+
+    return ch;
+}
+
 int main(int argc, char** argv)
 {
-    TurtleChar ch1 = TurtleChar().addMove(direction::down, 2).addMove(direction::right, 1);
+    TurtleChar ch1 = testA();
     ros::init(argc, argv, "ensargok");
     
     ros::NodeHandle n;
@@ -99,13 +94,6 @@ int main(int argc, char** argv)
     int count = 0;
     while(ros::ok())
     {
-        /*
-        if ( count < 5 )
-            cmd_vel_pub.publish(ch1.moves[0].asTwist());
-        else if ( count < 10 )
-            cmd_vel_pub.publish(ch1.moves[1].asTwist());
-        */
-
         if ( count == 15 )
             g_Writer.addChar(ch1);
         
