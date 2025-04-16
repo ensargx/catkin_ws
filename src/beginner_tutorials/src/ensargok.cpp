@@ -1,8 +1,11 @@
 #include "ros/console.h"
+#include "ros/init.h"
 #include "ros/publisher.h"
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
 #include "ros/service_client.h"
+#include "ros/subscriber.h"
+#include "std_msgs/String.h"
 #include "turtlesim/SetPen.h"
 #include <vector>
 #include <list>
@@ -161,10 +164,33 @@ TurtleChar charD()
     return ch;
 }
 
+void turtleWriteCallback(const std_msgs::String& msg)
+{
+    static TurtleChar A = testA();
+    static TurtleChar B = charB();
+    static TurtleChar C = charC();
+    static TurtleChar D = charD();
+    ROS_INFO("I heard: [%s]", msg.data.c_str());
+    const char* data = msg.data.c_str();
+
+    while (*data++) 
+    {
+        if ( *data == 'A' )
+            g_Writer.addChar(A);
+        else if ( *data == 'B' )
+            g_Writer.addChar(B);
+        else if ( *data == 'C' )
+            g_Writer.addChar(C);
+        else if ( *data == 'D' )
+            g_Writer.addChar(D);
+    }
+
+}
+
 int main(int argc, char** argv)
 {
-    TurtleChar ch1 = testA();
     ros::init(argc, argv, "ensargok");
+    TurtleChar ch1 = testA();
     TurtleChar chB = charB();
     TurtleChar chC = charC();
     TurtleChar chD = charD();
@@ -173,6 +199,7 @@ int main(int argc, char** argv)
 
     ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
     ros::ServiceClient client = n.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
+    ros::Subscriber sub = n.subscribe("turtle_writer", 1000, turtleWriteCallback);
 
     ros::Rate loop_rate(10);
 

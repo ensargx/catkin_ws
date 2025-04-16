@@ -9,6 +9,8 @@
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/ensargok.cpp
 ros/console.h
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/console.h
+ros/init.h
+/home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/init.h
 ros/publisher.h
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/publisher.h
 ros/ros.h
@@ -17,6 +19,10 @@ geometry_msgs/Twist.h
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/geometry_msgs/Twist.h
 ros/service_client.h
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/service_client.h
+ros/subscriber.h
+/home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/subscriber.h
+std_msgs/String.h
+/home/ensargok/catkin_ws/src/beginner_tutorials/src/std_msgs/String.h
 turtlesim/SetPen.h
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/turtlesim/SetPen.h
 vector
@@ -707,6 +713,22 @@ ros/forwards.h
 /opt/ros/noetic/include/ros/ros/forwards.h
 
 /opt/ros/noetic/include/rosconsole/macros_generated.h
+
+/opt/ros/noetic/include/std_msgs/String.h
+string
+-
+vector
+-
+memory
+-
+ros/types.h
+-
+ros/serialization.h
+-
+ros/builtin_message_traits.h
+-
+ros/message_operations.h
+-
 
 /opt/ros/noetic/include/turtlesim/SetPen.h
 ros/service_traits.h
