@@ -1,16 +1,25 @@
+#include "ros/console.h"
+#include "ros/publisher.h"
 #include "ros/ros.h"
-#include "std_msgs/String.h"
 #include "geometry_msgs/Twist.h"
+#include "ros/service_client.h"
+#include "turtlesim/SetPen.h"
 #include <vector>
 #include <list>
 
+struct TurtleMove
+{
+    geometry_msgs::Twist twist;
+    bool penDown = true;
+};
+
 struct TurtleChar
 {
-    std::vector<geometry_msgs::Twist> moves = {};
+    std::vector<TurtleMove> moves = {};
 
-    TurtleChar& addMove(const geometry_msgs::Twist& tw) 
+    TurtleChar& addMove(const geometry_msgs::Twist& tw, bool penDown = true) 
     {
-        moves.push_back(tw);
+        moves.push_back({tw, penDown});
         return *this;
     }
 
@@ -19,16 +28,19 @@ struct TurtleChar
 class TurtleWriter 
 {
 public:
-    void consume(ros::Publisher& pub)
+    void consume(ros::Publisher& pub, ros::ServiceClient& client)
     {
-        if (list.empty())
+        if (listMoves.empty())
             return;
 
+        if ( listMoves.front().penDown != m_penDown )
+            togglePen(client);
+
         if ( 5 > iter++ )
-            pub.publish(list.front());
+            pub.publish(listMoves.front().twist);
         else 
         {
-            list.erase(list.begin());
+            listMoves.erase(listMoves.begin());
             iter = 0;
         }
     }
@@ -36,16 +48,44 @@ public:
     void addChar(const TurtleChar& ch)
     {
         // c++23 -> append_range
-        for ( const geometry_msgs::Twist& move : ch.moves )
-            list.emplace_back(move);
+        for ( const auto& move : ch.moves )
+            listMoves.emplace_back(move);
+    }
+
+    void togglePen(ros::ServiceClient& client)
+    {
+        bool next = !m_penDown;
+
+        ROS_WARN("next pen: %d", next);
+
+        turtlesim::SetPen srv = {};
+        srv.request.r = 255.f;
+        srv.request.g = 255.f;
+        srv.request.b = 255.f;
+        srv.request.width = 2.f;
+        srv.request.off = !next;
+
+        client.call(srv);
+        
+        m_penDown = next;
     }
 
 private:
-    std::list<geometry_msgs::Twist> list = {};
+    std::list<TurtleMove> listMoves = {};
     int iter = 0;
+    bool m_penDown = true;
 };
 
 TurtleWriter g_Writer;
+
+geometry_msgs::Twist createTwist(float x, float y, float z)
+{
+    geometry_msgs::Twist msg = {};
+    msg.linear.x = x;
+    msg.linear.y = y;
+    msg.linear.z = z;
+    return msg;
+}
 
 TurtleChar testA()
 {
@@ -55,25 +95,69 @@ TurtleChar testA()
     leg1.linear.x = 1.f;
     leg1.linear.y = 3.f;
 
-    ch.moves.push_back(leg1);
+    ch.addMove(leg1, true);
 
     geometry_msgs::Twist leg2 = {};
     leg2.linear.x = 0.5f;
     leg2.linear.y = -1.5f;
 
-    ch.moves.push_back(leg2);
+    ch.addMove(leg2);
 
     geometry_msgs::Twist leg3;
     leg3.linear.x = -1.f;
-    ch.moves.push_back(leg3);
+    ch.addMove(leg3);
     leg3.linear.x = 1.f;
-    ch.moves.push_back(leg3);
+    ch.addMove(leg3);
 
-    ch.moves.push_back(leg2);
+    ch.addMove(leg2);
 
     geometry_msgs::Twist end = {};
-    ch.moves.push_back(end);
+    ch.addMove(end);
 
+    return ch;
+}
+
+TurtleChar charB()
+{
+    TurtleChar ch = {};
+    geometry_msgs::Twist msg;
+    ch.addMove(createTwist(0.f, 3.f, 0.f));
+    ch.addMove(createTwist(1.0f, 0.f, 0.f));
+    ch.addMove(createTwist(0, -1.5f, 0.f));
+    ch.addMove(createTwist(-1.0f, 0.f, 0.f));
+    ch.addMove(createTwist(1.5f, 0.f, 0.f));
+    ch.addMove(createTwist(0, -1.5f, 0.f));
+    ch.addMove(createTwist(-1.5f, 0.f, 0.f));
+    ch.addMove(createTwist(1.5f, 0.f, 0.f));
+    ch.addMove(createTwist(0.f, 0.f, 0.f));
+    return ch;
+}
+
+TurtleChar charC() 
+{
+    TurtleChar ch = {};
+    ch.addMove(createTwist(2.f, 3.f, 0), false);
+    geometry_msgs::Twist msg = {};
+    msg.linear.x = 0.f;
+    msg.angular.z = -5.f;
+    ch.addMove(msg);
+    msg.linear.x = 4.f;
+    msg.angular.z = 5.f;
+    ch.addMove(msg, true);
+    ch.addMove(createTwist(0.f, 0.f, 0.f));
+    return ch;
+}
+
+TurtleChar charD()
+{
+    TurtleChar ch;
+    ch.addMove(createTwist(0.f, 1.5f, 0));
+    ch.addMove(createTwist(1.5f, 0.f, 0.f));
+    ch.addMove(createTwist(0.f, 1.5f, 0.f));
+    ch.addMove(createTwist(0.f, -3.f, 0.f));
+    ch.addMove(createTwist(-1.5f, 0.f, 0.f));
+    ch.addMove(createTwist(1.5f, 0, 0));
+    ch.addMove(createTwist(0.f, 0.f, 0.f));
     return ch;
 }
 
@@ -81,10 +165,14 @@ int main(int argc, char** argv)
 {
     TurtleChar ch1 = testA();
     ros::init(argc, argv, "ensargok");
+    TurtleChar chB = charB();
+    TurtleChar chC = charC();
+    TurtleChar chD = charD();
     
     ros::NodeHandle n;
 
     ros::Publisher cmd_vel_pub = n.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
+    ros::ServiceClient client = n.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
 
     ros::Rate loop_rate(10);
 
@@ -95,9 +183,9 @@ int main(int argc, char** argv)
     while(ros::ok())
     {
         if ( count == 15 )
-            g_Writer.addChar(ch1);
-        
-        g_Writer.consume(cmd_vel_pub);
+            g_Writer.addChar(chD);
+
+        g_Writer.consume(cmd_vel_pub, client);
 
         ros::spinOnce();
 
