@@ -7,12 +7,6 @@
 #IncludeRegexTransform: 
 
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/ensargok.cpp
-ros/console.h
-/home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/console.h
-ros/init.h
-/home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/init.h
-ros/publisher.h
-/home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/publisher.h
 ros/ros.h
 /home/ensargok/catkin_ws/src/beginner_tutorials/src/ros/ros.h
 geometry_msgs/Twist.h
