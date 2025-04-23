@@ -1,16 +1,19 @@
 #include "ros/console.h"
 #include "ros/ros.h"
 #include "geometry_msgs/Twist.h"
+#include "ros/subscriber.h"
 #include "std_msgs/String.h"
 #include "turtlesim/SetPen.h"
+#include "turtlesim/Pose.h"
+#include <boost/math/policies/policy.hpp>
 #include <cmath>
+#include <utility>
 #include <vector>
-#include <list>
 #include <math.h>
 
 struct RelativePos
 {
-    int x, y;
+    float x, y;
     bool penDown = true;
 };
 
@@ -20,22 +23,30 @@ struct TurtleMove
     bool penDown = true;
 };
 
+geometry_msgs::Twist TwistWr( float x, float y, float w )
+{
+    geometry_msgs::Twist msg;
+    msg.linear.x = x;
+    msg.linear.y = y;
+    msg.angular.z = w;
+    return msg;
+}
+
 class CharMove
 {
 public:
-    CharMove(std::vector<RelativePos>&& moves)
+    CharMove(std::vector<RelativePos>&& moves, float size = 1.f)
         : m_moves(moves)
         , m_moveIdx(0)
-        , m_turning(true)
-        , m_prevRot(0)
+        , m_size(size)
     { }
 
     bool IsMovesDone()
     {
-        return m_moves.size() == m_moveIdx && m_turning;
+        return m_moves.size() == m_moveIdx;
     }
 
-    TurtleMove NextMove()
+    geometry_msgs::Twist NextMove(float initialX, float initialY, float posX, float posY, float rotW)
     {
         if ( IsMovesDone() )
         {
@@ -43,50 +54,40 @@ public:
             return {};
         }
 
-        // if we should turn toward the location we'll go
-        if ( m_turning )
-        {
-            ROS_DEBUG("We'll ROTATE!");
-            const RelativePos& prevPos = PreviousPos();
-            const RelativePos& nextPos = NextPos();
+        ROS_DEBUG("rotW: %f", rotW);
 
-            double nextTurnRad = CalcualateRotation(prevPos.x, prevPos.y, nextPos.x, nextPos.y);
-            ROS_DEBUG("nextPos: %d, %d", nextPos.x, nextPos.y);
-            ROS_DEBUG("prevPos: %d, %d", prevPos.x, prevPos.y);
-            ROS_DEBUG("nextTurnRad: %lf", nextTurnRad);
+        std::pair<float, float> target = GetNextTarget(initialX, initialY);
 
-            double diffTurnRad = nextTurnRad - m_prevRot;
-            ROS_DEBUG("diffTurnRad = nextTurnRad - prewRot : %lf", diffTurnRad);
+        ROS_DEBUG("position: %f, %f", posX, posY);
+        ROS_DEBUG("target: %f, %f", target.first, target.second);
+
+        double nextTurnRad = CalcualateRotation(posX, posY, target.first, target.second);
+        ROS_DEBUG("nextTurnRad: %lf", nextTurnRad);
+
+        double diffTurnRad = nextTurnRad - rotW;
+        ROS_DEBUG("diffTurnRad = nextTurnRad - prewRot : %lf", diffTurnRad);
+
+        if ( diffTurnRad > M_PI )
+            diffTurnRad -= 2 * M_PI;
+        ROS_DEBUG("Calculated turn: %f", diffTurnRad);
+    
+        double distance = std::sqrt( std::pow<double>(posX - target.first, 2) + std::pow<double>(posY - target.second, 2) );
+        ROS_DEBUG("distance: %lf", distance);
+
+        double speed = std::sqrt(distance);
+        if ( std::abs(diffTurnRad) > 0.001 )
+            speed *= 0.001 * std::exp(-diffTurnRad);
         
-            m_turning = false;
-            m_prevRot = nextTurnRad;
+        ROS_DEBUG("speed: %lf", speed);
 
-            geometry_msgs::Twist msg = {};
-            msg.angular.z = diffTurnRad;
-
-            return {msg};
-        }
-        else // We should go forward.
+        if ( distance < 0.05 ) 
         {
-            ROS_DEBUG("We'll MOVE!");
-            const auto& prevPos = PreviousPos();
-            const auto& nextPos = NextPos();
-
-            ROS_DEBUG("nextPos: %d, %d", nextPos.x, nextPos.y);
-            ROS_DEBUG("prevPos: %d, %d", prevPos.x, prevPos.y);
-            ROS_DEBUG("calculate: sqrt(%lf + %lf)", std::pow<double>(prevPos.x - nextPos.x, 2), std::pow<double>(prevPos.y - nextPos.y, 2) );
-            double distance = std::sqrt( std::pow<double>(prevPos.x - nextPos.x, 2) + std::pow<double>(prevPos.y - nextPos.y, 2) );
-            ROS_DEBUG("distance: %lf", distance);
-
-            geometry_msgs::Twist msg = {};
-            
             ++m_moveIdx;
-            m_turning = true;
-
-            msg.linear.x = distance;
-
-            return { msg };
+            speed *= 0.1;
         }
+
+        // return TwistWr(0,0, diffTurnRad);
+        return TwistWr(speed, 0, diffTurnRad);
     }
 
 private:
@@ -98,89 +99,33 @@ private:
 
         double res = std::atan2(ydif, xdif);
 
-        if ( res < 0 )
-            res += 2 * M_PI;
-
         return res;
     }
 
-    const RelativePos& PreviousPos()
+    std::pair<float, float> GetNextTarget(float initialX, float initialY)
     {
-        static RelativePos empty = {};
-        if ( m_moveIdx == 0 )
-            return empty;
-        return m_moves[m_moveIdx-1];
-    }
-
-    const RelativePos& NextPos()
-    {
-        return m_moves[m_moveIdx];
+        float x = initialX + m_moves[m_moveIdx].x * m_size;
+        float y = initialY + m_moves[m_moveIdx].y * m_size;
+        return std::make_pair(x, y);
     }
 
 private:
     std::vector<RelativePos> m_moves;
     size_t m_moveIdx = 0;
-    bool m_turning = true;
-    double m_prevRot = 0;
+    float m_size = 1;
 };
-
-/*
-class TurtleWriter 
-{
-public:
-    void consume(ros::Publisher& pub, ros::ServiceClient& client)
-    {
-        if (listMoves.empty())
-            return;
-
-        if ( listMoves.front().penDown != m_penDown )
-            togglePen(client);
-
-        if ( 5 > iter++ )
-            pub.publish(listMoves.front().twist);
-        else 
-        {
-            listMoves.erase(listMoves.begin());
-            iter = 0;
-        }
-    }
-
-    void addChar(const TurtleChar& ch)
-    {
-        // c++23 -> append_range
-        for ( const auto& move : ch.moves )
-            listMoves.emplace_back(move);
-    }
-
-    void togglePen(ros::ServiceClient& client)
-    {
-        bool next = !m_penDown;
-
-        ROS_WARN("next pen: %d", next);
-
-        turtlesim::SetPen srv = {};
-        srv.request.r = 255.f;
-        srv.request.g = 255.f;
-        srv.request.b = 255.f;
-        srv.request.width = 1.f;
-        srv.request.off = !next;
-
-        client.call(srv);
-        
-        m_penDown = next;
-    }
-
-private:
-    std::list<TurtleMove> listMoves = {};
-    int iter = 0;
-    bool m_penDown = true;
-};
-
-TurtleWriter g_Writer;
-*/
 
 void turtleWriteCallback(const std_msgs::String& msg)
 {
+}
+
+float g_X, g_Y, g_W;
+void turtlePoseCallback(const turtlesim::Pose& msg)
+{
+    // ROS_DEBUG("x y w: %f %f %f", msg.x, msg.y, msg.theta);
+    g_X = msg.x;
+    g_Y = msg.y;
+    g_W = msg.theta;
 }
 
 int main(int argc, char** argv)
@@ -193,20 +138,18 @@ int main(int argc, char** argv)
     }
 
     ros::Publisher cmd_vel = n.advertise<geometry_msgs::Twist>("turtle1/cmd_vel", 1000);
-    ros::ServiceClient client = n.serviceClient<turtlesim::SetPen>("turtle1/set_pen");
     ros::Subscriber sub = n.subscribe("turtle_writer", 1000, turtleWriteCallback);
+    ros::Subscriber pose = n.subscribe("turtle1/pose", 1000, turtlePoseCallback);
 
-    ros::Rate loop_rate(1);
+    ros::Rate loop_rate(10);
 
     RelativePos pos1 = { 3, 1 };
-    RelativePos pos2 = { 3, 5 };
-    RelativePos pos3 = { 0, 0 };
-    RelativePos pos4 = { 1, 1 };
-    RelativePos pos5 = { 3, 5 };
+    RelativePos pos2 = { 3, 3 };
+    RelativePos posEnd = { 4, 1 };
 
-    std::vector<RelativePos> pos = { pos1, pos2, pos3, pos4, pos5 };
+    std::vector<RelativePos> pos = { pos1, pos2, posEnd };
 
-    CharMove move = ( std::move(pos) );
+    CharMove move = CharMove( std::move(pos), 0.5f );
 
     // geometry_msgs::Twist msgne = move.NextMove().msg;
     // ROS_WARN("Move: %f", msgne.angular.z);
@@ -216,9 +159,10 @@ int main(int argc, char** argv)
     {
         // g_Writer.consume(cmd_vel, client);
 
-        if ( count > 1 && !move.IsMovesDone() )
+        if ( count > 10 && !move.IsMovesDone() )
         {
-            cmd_vel.publish( move.NextMove().msg );
+
+            cmd_vel.publish( move.NextMove(5,5, g_X, g_Y, g_W) );
         }
 
 
