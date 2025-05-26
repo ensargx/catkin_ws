@@ -57,6 +57,7 @@ add_message_files(
 add_service_files(
   FILES
   AddTwoInts.srv
+  TurtleWrite.srv
 )
 
 ## Generate actions in the 'action' folder
@@ -219,7 +220,11 @@ add_executable(add_two_ints_client src/add_two_ints_client.cpp)
 target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
 add_dependencies(add_two_ints_client beginner_tutorials_gencpp)
 
-add_executable(ensargok src/ensargok.cpp)
-target_link_libraries(ensargok ${catkin_LIBRARIES})
-add_dependencies(ensargok beginner_tutorials_generate_messages_cpp)
+add_executable(turtle_write_server src/turtle_write_server.cpp)
+target_link_libraries(turtle_write_server ${catkin_LIBRARIES})
+add_dependencies(turtle_write_server beginner_tutorials_gencpp)
+
+add_executable(turtle_write_client src/turtle_write_client.cpp)
+target_link_libraries(turtle_write_client ${catkin_LIBRARIES})
+add_dependencies(turtle_write_client beginner_tutorials_gencpp)
 

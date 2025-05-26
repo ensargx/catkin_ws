@@ -21,8 +21,8 @@
 },
 {
   "directory": "/home/ensargok/catkin_ws/build/beginner_tutorials",
-  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"beginner_tutorials\\\" -I/home/ensargok/catkin_ws/devel/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp   -DENSAR_LOG_DEBUG=0   -o CMakeFiles/ensargok.dir/src/ensargok.cpp.o -c /home/ensargok/catkin_ws/src/beginner_tutorials/src/ensargok.cpp",
-  "file": "/home/ensargok/catkin_ws/src/beginner_tutorials/src/ensargok.cpp"
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"beginner_tutorials\\\" -I/home/ensargok/catkin_ws/devel/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp   -DENSAR_LOG_DEBUG=0   -o CMakeFiles/turtle_write_client.dir/src/turtle_write_client.cpp.o -c /home/ensargok/catkin_ws/src/beginner_tutorials/src/turtle_write_client.cpp",
+  "file": "/home/ensargok/catkin_ws/src/beginner_tutorials/src/turtle_write_client.cpp"
 },
 {
   "directory": "/home/ensargok/catkin_ws/build/beginner_tutorials",
@@ -36,12 +36,17 @@
 },
 {
   "directory": "/home/ensargok/catkin_ws/build/beginner_tutorials",
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"beginner_tutorials\\\" -I/home/ensargok/catkin_ws/devel/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp   -DENSAR_LOG_DEBUG=0   -o CMakeFiles/talker.dir/src/talker.cpp.o -c /home/ensargok/catkin_ws/src/beginner_tutorials/src/talker.cpp",
+  "file": "/home/ensargok/catkin_ws/src/beginner_tutorials/src/talker.cpp"
+},
+{
+  "directory": "/home/ensargok/catkin_ws/build/beginner_tutorials",
   "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"beginner_tutorials\\\" -I/home/ensargok/catkin_ws/devel/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp   -DENSAR_LOG_DEBUG=0   -o CMakeFiles/add_two_ints_client.dir/src/add_two_ints_client.cpp.o -c /home/ensargok/catkin_ws/src/beginner_tutorials/src/add_two_ints_client.cpp",
   "file": "/home/ensargok/catkin_ws/src/beginner_tutorials/src/add_two_ints_client.cpp"
 },
 {
   "directory": "/home/ensargok/catkin_ws/build/beginner_tutorials",
-  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"beginner_tutorials\\\" -I/home/ensargok/catkin_ws/devel/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp   -DENSAR_LOG_DEBUG=0   -o CMakeFiles/talker.dir/src/talker.cpp.o -c /home/ensargok/catkin_ws/src/beginner_tutorials/src/talker.cpp",
-  "file": "/home/ensargok/catkin_ws/src/beginner_tutorials/src/talker.cpp"
+  "command": "/usr/bin/c++  -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\\\"beginner_tutorials\\\" -I/home/ensargok/catkin_ws/devel/include -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp   -DENSAR_LOG_DEBUG=0   -o CMakeFiles/turtle_write_server.dir/src/turtle_write_server.cpp.o -c /home/ensargok/catkin_ws/src/beginner_tutorials/src/turtle_write_server.cpp",
+  "file": "/home/ensargok/catkin_ws/src/beginner_tutorials/src/turtle_write_server.cpp"
 }
 ]

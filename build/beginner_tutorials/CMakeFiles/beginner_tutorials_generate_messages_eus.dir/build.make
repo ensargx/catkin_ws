@@ -55,6 +55,7 @@ include beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus.d
 
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/msg/Num.l
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv/AddTwoInts.l
+beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv/TurtleWrite.l
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/manifest.l
 
 
@@ -68,13 +69,19 @@ beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus: /home/en
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ensargok/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating EusLisp code from beginner_tutorials/AddTwoInts.srv"
 	cd /home/ensargok/catkin_ws/build/beginner_tutorials && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/geneus/cmake/../../../lib/geneus/gen_eus.py /home/ensargok/catkin_ws/src/beginner_tutorials/srv/AddTwoInts.srv -Ibeginner_tutorials:/home/ensargok/catkin_ws/src/beginner_tutorials/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p beginner_tutorials -o /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv
 
+/home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv/TurtleWrite.l: /opt/ros/noetic/lib/geneus/gen_eus.py
+/home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv/TurtleWrite.l: /home/ensargok/catkin_ws/src/beginner_tutorials/srv/TurtleWrite.srv
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ensargok/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating EusLisp code from beginner_tutorials/TurtleWrite.srv"
+	cd /home/ensargok/catkin_ws/build/beginner_tutorials && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/geneus/cmake/../../../lib/geneus/gen_eus.py /home/ensargok/catkin_ws/src/beginner_tutorials/srv/TurtleWrite.srv -Ibeginner_tutorials:/home/ensargok/catkin_ws/src/beginner_tutorials/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p beginner_tutorials -o /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv
+
 /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/manifest.l: /opt/ros/noetic/lib/geneus/gen_eus.py
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ensargok/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating EusLisp manifest code for beginner_tutorials"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ensargok/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Generating EusLisp manifest code for beginner_tutorials"
 	cd /home/ensargok/catkin_ws/build/beginner_tutorials && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/geneus/cmake/../../../lib/geneus/gen_eus.py -m -o /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials beginner_tutorials std_msgs
 
 beginner_tutorials_generate_messages_eus: beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus
 beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/msg/Num.l
 beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv/AddTwoInts.l
+beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/srv/TurtleWrite.l
 beginner_tutorials_generate_messages_eus: /home/ensargok/catkin_ws/devel/share/roseus/ros/beginner_tutorials/manifest.l
 beginner_tutorials_generate_messages_eus: beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_eus.dir/build.make
 

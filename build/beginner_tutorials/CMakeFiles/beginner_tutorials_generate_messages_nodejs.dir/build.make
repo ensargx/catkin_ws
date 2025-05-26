@@ -55,6 +55,7 @@ include beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodej
 
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodejs: /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/msg/Num.js
 beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodejs: /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv/AddTwoInts.js
+beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodejs: /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv/TurtleWrite.js
 
 
 /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/msg/Num.js: /opt/ros/noetic/lib/gennodejs/gen_nodejs.py
@@ -67,9 +68,15 @@ beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodejs: /home
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ensargok/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Generating Javascript code from beginner_tutorials/AddTwoInts.srv"
 	cd /home/ensargok/catkin_ws/build/beginner_tutorials && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/gennodejs/cmake/../../../lib/gennodejs/gen_nodejs.py /home/ensargok/catkin_ws/src/beginner_tutorials/srv/AddTwoInts.srv -Ibeginner_tutorials:/home/ensargok/catkin_ws/src/beginner_tutorials/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p beginner_tutorials -o /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv
 
+/home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv/TurtleWrite.js: /opt/ros/noetic/lib/gennodejs/gen_nodejs.py
+/home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv/TurtleWrite.js: /home/ensargok/catkin_ws/src/beginner_tutorials/srv/TurtleWrite.srv
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/ensargok/catkin_ws/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Generating Javascript code from beginner_tutorials/TurtleWrite.srv"
+	cd /home/ensargok/catkin_ws/build/beginner_tutorials && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/gennodejs/cmake/../../../lib/gennodejs/gen_nodejs.py /home/ensargok/catkin_ws/src/beginner_tutorials/srv/TurtleWrite.srv -Ibeginner_tutorials:/home/ensargok/catkin_ws/src/beginner_tutorials/msg -Istd_msgs:/opt/ros/noetic/share/std_msgs/cmake/../msg -p beginner_tutorials -o /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv
+
 beginner_tutorials_generate_messages_nodejs: beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodejs
 beginner_tutorials_generate_messages_nodejs: /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/msg/Num.js
 beginner_tutorials_generate_messages_nodejs: /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv/AddTwoInts.js
+beginner_tutorials_generate_messages_nodejs: /home/ensargok/catkin_ws/devel/share/gennodejs/ros/beginner_tutorials/srv/TurtleWrite.js
 beginner_tutorials_generate_messages_nodejs: beginner_tutorials/CMakeFiles/beginner_tutorials_generate_messages_nodejs.dir/build.make
 
 .PHONY : beginner_tutorials_generate_messages_nodejs
